@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TechStore – Productos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; }
+    header { background: #1a237e; color: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 18px; }
+    header a { color: #ffeb3b; text-decoration: none; font-size: 14px; margin-left: 20px; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 10px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    h2 { color: #1a237e; margin-bottom: 16px; font-size: 18px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: block; font-size: 13px; color: #333; font-weight: bold; margin-bottom: 4px; }
+    input, select { width: 100%; padding: 9px 12px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 14px; }
+    input:focus, select:focus { outline: none; border-color: #1a237e; }
+    .full { grid-column: 1 / -1; }
+    .btn-submit { background: #1a237e; color: white; border: none; padding: 10px 28px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: bold; margin-top: 8px; }
+    .btn-submit:hover { background: #283593; }
+    .mensaje { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+    .ok { background: #e8f5e9; color: #2e7d32; }
+    .err { background: #ffebee; color: #c62828; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead { background: #1a237e; color: white; }
+    th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #eee; }
+    tr:hover { background: #f9f9f9; }
+    .btn-del { background: #c62828; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; }
+    .btn-del:hover { background: #b71c1c; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏪 TechStore S.A.C. – Gestión de Productos</h1>
+    <div>
+      <a href="/principal">Inicio</a>
+      <a href="/salir">Cerrar sesión</a>
+    </div>
+  </header>
+  <div class="container">
+    {% if mensaje %}
+      <div class="mensaje {% if 'Error' in mensaje %}err{% else %}ok{% endif %}">{{ mensaje }}</div>
+    {% endif %}
+
+    <div class="card">
+      <h2>➕ Registrar Nuevo Producto</h2>
+      <form method="POST">
+        <div class="form-grid">
+          <div>
+            <label>Código</label>
+            <input type="text" name="codigo" placeholder="PROD-009" required>
+          </div>
+          <div>
+            <label>Nombre</label>
+            <input type="text" name="nombre" placeholder="Nombre del producto" required>
+          </div>
+          <div>
+            <label>Categoría</label>
+            <input type="text" name="categoria" placeholder="Laptops, Smartphones..." required>
+          </div>
+          <div>
+            <label>Precio (S/)</label>
+            <input type="number" name="precio" step="0.01" min="0" placeholder="0.00" required>
+          </div>
+          <div>
+            <label>Stock</label>
+            <input type="number" name="stock" min="0" placeholder="0">
+          </div>
+          <div>
+            <label>Descripción</label>
+            <input type="text" name="descripcion" placeholder="Descripción opcional">
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Registrar Producto</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>📋 Listado de Productos ({{ productos|length }})</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Código</th><th>Nombre</th><th>Categoría</th>
+            <th>Precio</th><th>Stock</th><th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in productos %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.codigo }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.categoria }}</td>
+            <td>S/ {{ "%.2f"|format(p.precio) }}</td>
+            <td>{{ p.stock }}</td>
+            <td>
+              <form method="POST" action="/eliminar-producto/{{ p.id }}" onsubmit="return confirm('¿Eliminar {{ p.nombre }}?')">
+                <button type="submit" class="btn-del">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
