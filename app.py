@@ -72,6 +72,9 @@ def init_db():
     conn.close()
     print('[DB] Base de datos inicializada correctamente.')
 
+# Inicializar la base de datos al importar el módulo (necesario para Gunicorn en Render)
+init_db()
+
 # ─────────────────────────────────────────
 # Endpoints REST (API para Flutter)
 # ─────────────────────────────────────────
